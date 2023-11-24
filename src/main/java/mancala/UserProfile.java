@@ -65,4 +65,13 @@ public class UserProfile implements Serializable {
     this.gameWonA = gameWonA;
   }
 
+  // true is ayo rules otherwise it's kalah
+  public void addGamePlayed(boolean rule){
+    if(rule) {
+      this.gamesPlayedA++;
+    } else {
+      this.gamesPlayedK++;
+    }
+  }
+
 }

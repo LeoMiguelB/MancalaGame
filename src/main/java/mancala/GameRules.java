@@ -54,28 +54,23 @@ public abstract class GameRules implements Serializable{
     boolean isSideEmpty(int pitNum) {
         // This method can be implemented in the abstract class.
 
-        // player 1 is from 1 to 6
-        int startPit = (pitNum > 0 && pitNum < 7) ? 1 : 7;
 
-        // can be false since should be counting the current pit aswell
-        gameBoard.setIterator(startPit, currentPlayer, false);
+        // set max for the player traversal
+        int max = (pitNum > 0 && pitNum < 7) ? 7 : 13;
+        int min = (pitNum > 0 && pitNum < 7) ? 1 : 7;
 
-        Countable currentSpot;
-
-        boolean sideEmpty = false;
 
         // should terminate if atleast one pit has a stone
         // should be up to 6 since each side has 6 pits
-        for (int i = 0; i < 6; i++) {
-            currentSpot = gameBoard.next();
-            ;
-
-            if (currentSpot.getStoneCount() == 1) {
-                sideEmpty = true;
+        for (int i = min; i < max; i++) {
+            System.out.println(i);
+            System.out.println((getNumStones(i) >= 1));
+            if(getNumStones(i) >= 1) {
+                return false;
             }
         }
 
-        return sideEmpty;
+        return true;
     }
 
     /**

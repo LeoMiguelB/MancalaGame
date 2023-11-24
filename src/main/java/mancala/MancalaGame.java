@@ -53,8 +53,11 @@ public class MancalaGame implements Serializable{
   
   // seems like who's side is empty is the loser...
   public Player getWinner() throws GameNotOverException, NoSuchPlayerException {
+    
     Player winner;
+    System.out.println("should be false: " + isGameOver());
     if(isGameOver()) {
+      System.out.println("inside get winner method");
       if(getStoreCount(getPlayerOne()) == getStoreCount(getPlayerTwo())) {
         // indicates a tie
         winner = null;
@@ -64,14 +67,18 @@ public class MancalaGame implements Serializable{
         winner = getPlayerOne();
       }
     } else {
+    
       throw new GameNotOverException();
     }
-    
+
     return winner;
+    
   }
   
   public boolean isGameOver() {
-    return ((isSideEmpty(1)) || (isSideEmpty(7)));
+    boolean sideOne = (isSideEmpty(1));
+    boolean sideTwo = (isSideEmpty(7));
+    return (sideOne || sideTwo);
   }
   
   // wrapper for checking if one side is empty

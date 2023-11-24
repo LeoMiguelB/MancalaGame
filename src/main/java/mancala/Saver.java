@@ -6,45 +6,68 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
-/*
-  side note...
-  example for generating UID's:
- serialver -classpath build/classes/java/main/mancala  mancala.Man
-calaGame
- */
+
 
 public class Saver {
 
-  public static void saveObject(final Serializable toSave, final String filename) {
-    String filePathFull = "./assets/" + filename;
+  private static final String FOLDER_NAME = "assets";
 
-    try (ObjectOutputStream objectOut =  new ObjectOutputStream(new FileOutputStream(filePathFull))) {
+  public static void saveObject(final Serializable toSave, final String filename) throws IOException {
 
-      objectOut.writeObject(toSave);
+    Path currentDir = Paths.get(System.getProperty("user.dir"));
+    Path folderPath = currentDir.resolve(FOLDER_NAME);
+    boolean folderExists = Files.exists(folderPath);
+
+    // simply add contents in the existing folder
+    if (!folderExists) {
+      try {
+        // Create the folder
+        Files.createDirectory(folderPath);
+      } catch (Exception e) {
+      }
+    }
     
+    Path filePathFull = folderPath.resolve(filename);
+
+    try (ObjectOutputStream objectOut = new ObjectOutputStream(new FileOutputStream(filePathFull.toFile()))) {
+      System.out.println("currently saving object");
+      objectOut.writeObject(toSave);
+
     } catch (IOException e) {
-      e.printStackTrace();
+      throw e;
     }
 
   }
 
-  public static Serializable loadObject(final String filename) {
+  public static Serializable loadObject(final String filename) throws IOException, ClassNotFoundException {
     MancalaGame gameLoaded = null;
 
-    String filePathFull = "./assets/" + filename;
-    
-    try(ObjectInputStream objectIn = new ObjectInputStream(new FileInputStream(filePathFull))) {
+    Path currentDir = Paths.get(System.getProperty("user.dir"));
+    Path folderPath = currentDir.resolve(FOLDER_NAME);
+    boolean folderExists = Files.exists(folderPath);
+
+    if(!folderExists) {
+      try {
+        Files.createDirectory(folderPath);
+      } catch (Exception e) {
+
+      }
+    }
+
+    Path filePathFull = folderPath.resolve(filename);
+
+    try (ObjectInputStream objectIn = new ObjectInputStream(new FileInputStream(filePathFull.toFile()))) {
 
       gameLoaded = (MancalaGame) objectIn.readObject();
 
     } catch (IOException | ClassNotFoundException e) {
-
-      System.out.println(e);
-
+      throw e;
     }
     return gameLoaded;
-
   }
 
 }

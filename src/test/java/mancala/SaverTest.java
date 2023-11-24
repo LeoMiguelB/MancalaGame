@@ -4,12 +4,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import java.io.File;
+import java.io.IOException;
 
 public class SaverTest {
 
   @Disabled
   @Test
-  public void testSaveObject() {
+  public void testSaveObject() throws IOException{
     // should be able to save the object
     MancalaGame game = new MancalaGame();
     // simple state where the players are set...

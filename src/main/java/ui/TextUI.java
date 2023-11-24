@@ -23,6 +23,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionListener;
 import java.io.FileNotFoundException;
 import java.io.FilterOutputStream;
+import java.io.IOException;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 
@@ -56,6 +57,8 @@ public class TextUI extends JFrame {
   private MancalaGame game;
   private UserProfile p1 = null;
   private UserProfile p2 = null;
+  private JLabel userInfoP1;
+  private JLabel userInfoP2;
 
   // helper variable for determining which selector is in use
   // 1 is for player 1 and 2 is for player 2
@@ -132,14 +135,18 @@ public class TextUI extends JFrame {
   }
 
   private void createMancalaGame() {
+    // initially must increment games played for
+    // players
+    addGamesPlayed();
     currentPlayer = new JLabel(PLAYER_INDICATOR + game.getCurrentPlayerName());
     createStores();
     mancalaContainer = new JPanel();
     mancalaContainer.setLayout(new BorderLayout());
+    mancalaContainer.add(createUserCard(p1, userInfoP1), BorderLayout.EAST);
+    mancalaContainer.add(createUserCard(p2, userInfoP1), BorderLayout.WEST);
     mancalaContainer.add(createMancala(), BorderLayout.CENTER);
-    mancalaContainer.add(createUserCard(p1), BorderLayout.EAST);
-    mancalaContainer.add(createUserCard(p2), BorderLayout.WEST);
     sceneContainer.add(mancalaContainer, "MancalaGame");
+    pack();
   }
 
   private JPanel createMancala() {
@@ -149,15 +156,17 @@ public class TextUI extends JFrame {
     return mancala;
   }
 
-  private JPanel createUserCard(UserProfile profile) {
-    JPanel profileCard = new JPanel();
-    profileCard.setLayout(new BoxLayout(profileCard, BoxLayout.Y_AXIS));
-    profileCard.add(new JLabel("Name: " + profile.getName()));
-    profileCard.add(new JLabel("Game Won (Kalah): " + profile.getGameWonK()));
-    profileCard.add(new JLabel("Game Won (Ayo): " + profile.getGameWonA()));
-    profileCard.add(new JLabel("Games Played (Kalah): " + profile.getGamesPlayedK()));
-    profileCard.add(new JLabel("Games Played (Ayo): " + profile.getGamesPlayedA()));
-    return profileCard;
+  private JPanel createUserCard(UserProfile profile, JLabel user) {
+    JPanel userProfile = new JPanel();
+    userProfile.setLayout(new BoxLayout(userProfile, BoxLayout.Y_AXIS));
+
+    String content = "<html>" + "Name:" + profile.getName() + "<br/>" + "Game Won (Kalah):" + profile.getGameWonK() + "<br/>" + "Game Won (Ayo):" + profile.getGameWonA() + "<br/>" +  "Games Played (Kalah):" + profile.getGamesPlayedK() + "<br/>" + "Game Played (Ayo):" + profile.getGamesPlayedA() + "<br/>" + "</html>";
+
+    user = new JLabel(content);
+
+    userProfile.add(user);
+
+    return userProfile;
   }
 
   private void createStores() {
@@ -174,6 +183,7 @@ public class TextUI extends JFrame {
   private JButton createResetButton() {
     JButton resetBtn = new JButton("reset game");
     resetBtn.addActionListener(e -> {
+      addGamesPlayed();
       newGame(); 
     });
     return resetBtn;
@@ -260,10 +270,10 @@ public class TextUI extends JFrame {
   }
 
   private JButton createToggleRules() {
-    JButton toggleRulesBtn = new JButton("Rules: Kalah");
+    JButton toggleRulesBtn = new JButton("Toggle Rules: Kalah");
     toggleRulesBtn.addActionListener(e -> {
       toggleRules = !toggleRules;
-      toggleRulesBtn.setText("Rules: " + ((toggleRules) ? "Ayo" : "Kalah"));
+      toggleRulesBtn.setText("Toggle Rules: " + ((toggleRules) ? "Ayo" : "Kalah"));
     });
 
     return toggleRulesBtn;
@@ -323,7 +333,6 @@ public class TextUI extends JFrame {
         });
         try {
           String pitValue = Integer.toString(game.getNumStones(pitNum));
-          System.out.println("mancala grid method " + pitValue);
           pitButtons[x][y].setText(pitValue);
         } catch (PitNotFoundException e) {
           JOptionPane.showMessageDialog(panel, "Something went wrong with setting up pits!");
@@ -336,8 +345,6 @@ public class TextUI extends JFrame {
     return panel;
   }
 
-  
-
   private void newGame() {
     game.startNewGame();
     updateView();
@@ -349,7 +356,12 @@ public class TextUI extends JFrame {
       // check to if the game is over
       try {
         Player winner = game.getWinner();
+        updateView();
+
         JOptionPane.showMessageDialog(mancalaContainer, "Congrats! " + winner.getName() + " you are the winner");
+
+        playAgainModal();
+        
         // now update the winner stats
         if (winner.getName().equals(p1.getName())) {
           if ((toggleRules)) {
@@ -393,13 +405,40 @@ public class TextUI extends JFrame {
       options[0]);
 
     if(choice == JOptionPane.YES_OPTION) {
-      newGame();
-      System.out.println("in the main menu option");
-      menuBar.setVisible(false);
-      switchPanel("MainMenu");
+      addGamesPlayed();
+      saveProfileModal();
+      quitGame();
     } else if (choice == JOptionPane.NO_OPTION) {
       newGame();
     }
+  }
+
+  private void saveProfileModal() {
+    String[] options = {
+      "Save Profile 1",
+      "Save Profile 2",
+      "Save Both"
+    };
+    System.out.println("inside of save Profile modal");
+    int choice = JOptionPane.showOptionDialog(rootPane, "Select an option to save profiles:", "Profile Saving Options", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
+
+    try {
+          if(choice == 0) {
+            Saver.saveObject(p1, PROFILE_EXTENSION);
+          } else if (choice == 1) {
+            Saver.saveObject(p2, PROFILE_EXTENSION);
+          } else if (choice == 2) {
+            Saver.saveObject(p1, PROFILE_EXTENSION);
+            Saver.saveObject(p2, PROFILE_EXTENSION);
+          }
+    } catch (IOException e) {
+      JOptionPane.showMessageDialog(rootPane, e.getMessage());
+    }
+  }
+
+  private void addGamesPlayed() {
+    p1.addGamePlayed(toggleRules);
+    p2.addGamePlayed(toggleRules);
   }
 
   private void quitGame() {
@@ -417,13 +456,33 @@ public class TextUI extends JFrame {
         JOptionPane.PLAIN_MESSAGE);
 
     String fileNameWithExt = fileName + fileExt;
-    Saver.saveObject(game, fileName);
+    try {
+      Saver.saveObject(game, fileNameWithExt);
+    } catch (IOException e){
+      JOptionPane.showMessageDialog(rootPane, e.getMessage());
+    }
   }
 
   private void loadData(String fileExt) {
     String fileName = fileLoader(fileExt);
-    MancalaGame gameLoaded = (MancalaGame) Saver.loadObject(fileName);
-    setGame(gameLoaded);
+
+    try {
+      if(fileExt.equals(PROFILE_EXTENSION)) {
+        if(currSelector == 1) {
+          p1 = (UserProfile) Saver.loadObject(fileName);
+        } else if (currSelector == 2) {
+          p2 = (UserProfile) Saver.loadObject(fileName);
+        }
+        updatePlayerBtns();
+        updatePlayerInfo();
+      } else if (fileExt.equals(MANCALA_EXTENSION)) {
+        game = (MancalaGame) Saver.loadObject(fileName);
+      }
+    } catch (IOException | ClassNotFoundException e) {
+      JOptionPane.showMessageDialog(rootPane, e.getMessage());
+    }
+
+    updateView();
   }
 
   private void setGame(MancalaGame gameToSet) {
@@ -432,8 +491,6 @@ public class TextUI extends JFrame {
 
   private String fileLoader(String fileExt) {
     JFileChooser chooser = new JFileChooser();
-    FileNameExtensionFilter filter = new FileNameExtensionFilter(fileExt, fileExt);
-    chooser.setFileFilter(filter);
     int validation = chooser.showOpenDialog(mancalaContainer);
     if (validation == JFileChooser.APPROVE_OPTION) {
       return chooser.getSelectedFile().getName();
@@ -483,6 +540,15 @@ public class TextUI extends JFrame {
   private void updatePlayerBtns() {
     p1Selector.setText("P1: " + ((p1 == null) ? "not set" : p1.getName()));
     p2Selector.setText("P2: " + ((p2 == null) ? "not set" : p2.getName()));
+  }
+
+  private void updatePlayerInfo() {
+
+    String content1 = "<html>" + "Name:" + p1.getName() + "<br/>" + "Game Won (Kalah):" + p1.getGameWonK() + "<br/>" + "Game Won (Ayo):" + p1.getGameWonA() + "<br/>" +  "Games Played (Kalah):" + p1.getGamesPlayedK() + "<br/>" + "Game Played (Ayo):" + p1.getGamesPlayedA() + "<br/>" + "</html>";
+    String content2 = "<html>" + "Name:" + p2.getName() + "<br/>" + "Game Won (Kalah):" + p2.getGameWonK() + "<br/>" + "Game Won (Ayo):" + p2.getGameWonA() + "<br/>" +  "Games Played (Kalah):" + p2.getGamesPlayedK() + "<br/>" + "Game Played (Ayo):" + p2.getGamesPlayedA() + "<br/>" + "</html>";
+
+    userInfoP1.setText(content1);
+    userInfoP2.setText(content2);
   }
 
   /*/
@@ -552,6 +618,7 @@ public class TextUI extends JFrame {
       {
         // names must b unqiue
         JOptionPane.showMessageDialog(submit, "can't have the same name as player 1");
+        
       }
       else if((currSelector == 1) && (p2 != null) && (p2.getName().equals(nameInput.getText())))
       {
@@ -564,6 +631,8 @@ public class TextUI extends JFrame {
         } else if (currSelector == 2) {
           p2 = new UserProfile(nameInput.getText());
         }
+        //reset currSelector
+        currSelector = 0;
         // reset the text field
         nameInput.setText("");
         updatePlayerBtns();
