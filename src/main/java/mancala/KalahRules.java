@@ -65,8 +65,10 @@ public class KalahRules extends GameRules {
     // in this variation of the game player gets free turn if in store
     // player one is at 6, and player two is at 13
     int playerStore = (playerNum == 1) ? 6 : 13;
-    
-    int pitNumAfterMove = getNextPitIndex(startPit+numMoves);
+
+    // simply get the current position of iterator
+    MancalaDataStructure boardGame = getDataStructure();
+    int pitNumAfterMove = boardGame.getIteratorPos();
 
     if (isCapturePossible(pitNumAfterMove, playerNum)) {
       int capturedStones = captureStones(pitNumAfterMove);

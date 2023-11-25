@@ -10,7 +10,6 @@ public class UserProfile implements Serializable {
   private int gameWonA;
 
   public UserProfile() {
-    
   }
 
   public UserProfile(String name) {

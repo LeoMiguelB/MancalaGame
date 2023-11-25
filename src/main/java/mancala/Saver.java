@@ -44,7 +44,7 @@ public class Saver {
   }
 
   public static Serializable loadObject(final String filename) throws IOException, ClassNotFoundException {
-    MancalaGame gameLoaded = null;
+    Serializable gameLoaded = null;
 
     Path currentDir = Paths.get(System.getProperty("user.dir"));
     Path folderPath = currentDir.resolve(FOLDER_NAME);
@@ -62,7 +62,7 @@ public class Saver {
 
     try (ObjectInputStream objectIn = new ObjectInputStream(new FileInputStream(filePathFull.toFile()))) {
 
-      gameLoaded = (MancalaGame) objectIn.readObject();
+      gameLoaded = (Serializable) objectIn.readObject();
 
     } catch (IOException | ClassNotFoundException e) {
       throw e;

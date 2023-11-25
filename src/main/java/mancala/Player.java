@@ -8,7 +8,6 @@ public class Player implements Serializable {
   private UserProfile user;
 
   public Player() {
-    
   }
 
   public Player(final UserProfile userP) {

@@ -14,8 +14,7 @@ public class MancalaGame implements Serializable{
   }  
 
   public MancalaGame(GameRules whichRule) {
-    this();
-    board = whichRule;
+    setGameRules(whichRule);
   }
   
   // private as per UML diagram provided
@@ -50,21 +49,22 @@ public class MancalaGame implements Serializable{
     return board.getPlayerStoreCount(playerNum);
   }
 
-  
-  // seems like who's side is empty is the loser...
   public Player getWinner() throws GameNotOverException, NoSuchPlayerException {
     
     Player winner;
-    System.out.println("should be false: " + isGameOver());
     if(isGameOver()) {
-      System.out.println("inside get winner method");
+      // need to know whose side is not empty
+      int playerNotEmpty = (isSideEmpty(1)) ? 2 : 1;
+
+      endGameEmptySides(playerNotEmpty);
+
       if(getStoreCount(getPlayerOne()) == getStoreCount(getPlayerTwo())) {
         // indicates a tie
         winner = null;
-      } else if(getSidePits(getPlayerOne()) == 0) {
-        winner =  getPlayerTwo();
+      } else if(getStoreCount(getPlayerOne()) > getStoreCount(getPlayerTwo())) {
+        winner =  getPlayerOne();
       } else {
-        winner = getPlayerOne();
+        winner = getPlayerTwo();
       }
     } else {
     
@@ -153,6 +153,17 @@ public class MancalaGame implements Serializable{
   *****************************************************************************
   wrappers and helpers
   */
+  
+  private void endGameEmptySides(int playerNum) {
+    int max = (playerNum == 1) ? 6 : 12;
+    int min = (playerNum == 1) ? 1 : 7;
+    
+    for(int i = min; i <= max; i++) {
+      int stonesToAdd = board.removePitStones(i);
+      board.addStoneStore(playerNum, stonesToAdd);
+    }
+  }
+
   private void setPlayerOne(Player pOne) {
     playerOne = pOne;
   }

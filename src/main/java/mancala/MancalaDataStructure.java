@@ -210,6 +210,16 @@ public class MancalaDataStructure implements Serializable{
 
 
     /**
+     * getter for the iterator position
+     *
+     * @return iteratorPos   returns the current iterator position.
+     */
+    public int getIteratorPos() {
+        return iteratorPos;
+    }
+
+
+    /**
      * Moves the iterator to the next position.
      *
      * @return The countable object at the next position.

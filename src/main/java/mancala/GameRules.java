@@ -198,12 +198,12 @@ public abstract class GameRules implements Serializable{
         int max = (playerNum == 1) ? 6 : 12;
         int min = (playerNum == 1) ? 1 : 7;
 
+        System.out.println("inside isCapture " + stopPitNum);
+
         return ((getNumStones(stopPitNum) == 1) && (stopPitNum <= max && stopPitNum >= min));
     }
 
     public int getNextPitIndex(int currentValue) {
-        System.out.println("inside getNextPitIndex method: " + ((currentValue % TOTAL_PITS)) + " current pit index "
-                + currentValue);
 
         int nextIndex = (currentValue % TOTAL_PITS);
         // if modulus results in 0 then it must be that it landed on 1

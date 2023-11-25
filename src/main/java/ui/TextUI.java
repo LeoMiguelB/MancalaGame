@@ -19,7 +19,11 @@ import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Label;
 import java.awt.event.ActionListener;
 import java.io.FileNotFoundException;
 import java.io.FilterOutputStream;
@@ -88,10 +92,12 @@ public class TextUI extends JFrame {
     setLayout(new BorderLayout());
     createComponents();
     createContainers();
+    pack();
   }
 
   public void switchPanel(String panelName) {
     cardContainer.show(sceneContainer, panelName);
+    pack();
   }
 
   private void setupUI() {
@@ -121,17 +127,20 @@ public class TextUI extends JFrame {
     sceneContainer.add(makeCreateLoadPage(), "CreateLoad");
     sceneContainer.add(createProfilePage(), "CreateProfile");
 
-
     // default should show main menu
-        
     cardContainer.show(sceneContainer, "MainMenu");
     add(sceneContainer, BorderLayout.CENTER);
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+    pack();
   }
 
   private void createComponents() {
     p1Selector = new JButton();
     p2Selector = new JButton();
+    userInfoP1 = new JLabel();
+    userInfoP2 = new JLabel();
+    pack();
   }
 
   private void createMancalaGame() {
@@ -141,10 +150,20 @@ public class TextUI extends JFrame {
     currentPlayer = new JLabel(PLAYER_INDICATOR + game.getCurrentPlayerName());
     createStores();
     mancalaContainer = new JPanel();
-    mancalaContainer.setLayout(new BorderLayout());
-    mancalaContainer.add(createUserCard(p1, userInfoP1), BorderLayout.EAST);
-    mancalaContainer.add(createUserCard(p2, userInfoP1), BorderLayout.WEST);
-    mancalaContainer.add(createMancala(), BorderLayout.CENTER);
+    mancalaContainer.setLayout(new GridBagLayout());
+    GridBagConstraints c = new GridBagConstraints();
+    c.gridx = 0;
+    c.gridwidth = 1;
+    c.weightx = 0.6;
+    mancalaContainer.add(createUserCard(p1, userInfoP1),c);
+    c.gridx = 3;
+    c.gridwidth = 2;
+    c.weightx = 1;
+    mancalaContainer.add(createMancala(),c);
+    c.gridx = 7;
+    c.gridwidth = 1;
+    c.weightx = 0.6;
+    mancalaContainer.add(createUserCard(p2, userInfoP2),c);
     sceneContainer.add(mancalaContainer, "MancalaGame");
     pack();
   }
@@ -153,6 +172,7 @@ public class TextUI extends JFrame {
     JPanel mancala = new JPanel(new BorderLayout());
     mancala.add(createMancalaBoard(), BorderLayout.CENTER);
     mancala.add(createPlayerIndicator(currentPlayer), BorderLayout.NORTH);
+    pack();
     return mancala;
   }
 
@@ -162,7 +182,7 @@ public class TextUI extends JFrame {
 
     String content = "<html>" + "Name:" + profile.getName() + "<br/>" + "Game Won (Kalah):" + profile.getGameWonK() + "<br/>" + "Game Won (Ayo):" + profile.getGameWonA() + "<br/>" +  "Games Played (Kalah):" + profile.getGamesPlayedK() + "<br/>" + "Game Played (Ayo):" + profile.getGamesPlayedA() + "<br/>" + "</html>";
 
-    user = new JLabel(content);
+    user.setText(content);
 
     userProfile.add(user);
 
@@ -184,6 +204,8 @@ public class TextUI extends JFrame {
     JButton resetBtn = new JButton("reset game");
     resetBtn.addActionListener(e -> {
       addGamesPlayed();
+      updatePlayerInfo(p1, userInfoP1);
+      updatePlayerInfo(p2, userInfoP2);
       newGame(); 
     });
     return resetBtn;
@@ -195,13 +217,15 @@ public class TextUI extends JFrame {
     mancalaBoard.add(createPlayerStores(storeOne), BorderLayout.EAST);
     mancalaBoard.add(createPlayerStores(storeTwo), BorderLayout.WEST);
     mancalaBoard.add(createResetButton(), BorderLayout.NORTH);
+    pack();
     return mancalaBoard;
   }
 
   private JPanel createPlayerStores(JLabel storeLabel) {
     JPanel storePanel = new JPanel(new BorderLayout());
-    storePanel.setBackground(Color.LIGHT_GRAY);
-    storePanel.add(storeLabel, BorderLayout.CENTER);
+    JButton btnStore = new JButton();
+    btnStore.add(storeLabel);
+    storePanel.add(btnStore, BorderLayout.CENTER);
     return storePanel;
   }
 
@@ -222,7 +246,10 @@ public class TextUI extends JFrame {
     JMenu dropDown = new JMenu("Options");
     dropDown.add(createMenuItem("Load", (e) -> loadData(MANCALA_EXTENSION)));
     dropDown.add(createMenuItem("Save",(e) -> saveData(MANCALA_EXTENSION)));
-    dropDown.add(createMenuItem("Quit", (e) -> quitGame()));
+    dropDown.add(createMenuItem("Quit", (e) -> {
+      saveProfileModal();
+      quitGame();
+    }));
     menuBar.add(dropDown);
     // since at main menu don't want the jmenu bar showing
     // should set visibility to true once it start the game
@@ -236,36 +263,23 @@ public class TextUI extends JFrame {
     return item;
   }
 
-  public void setupMancalGameContainer() {
-    mancalaContainer.setLayout(new BorderLayout());
-    mancalaContainer.add(createMancalaGrid(), BorderLayout.CENTER);
-    mancalaContainer.add(makePlayerStores(storeOne), BorderLayout.EAST);
-    mancalaContainer.add(makePlayerStores(storeTwo), BorderLayout.WEST);
-    mancalaContainer.add(makePlayerIndicator(currentPlayer), BorderLayout.NORTH);
-  }
-
   public JPanel makePlayerIndicator(JLabel indicator) {
     JPanel playerIndicator = new JPanel();
     playerIndicator.add(indicator);
     return playerIndicator;
   }
 
-  public void setupMainMenuContainer() {
-    mainMenuContainer.setLayout(new BorderLayout());
-    mainMenuContainer.add(makeMainMenuOptions(), BorderLayout.CENTER);
-  }
 
   private JPanel makeMainMenuOptions() {
     JPanel options = new JPanel();
-    options.setLayout(new BoxLayout(options, BoxLayout.PAGE_AXIS));
+    options.setLayout(new FlowLayout());
     
     options.add(makeStartGameButton());
     // these will indicate whether the players have been set
     options.add(createPlayerBtn("P1: ", p1, p1Selector, 1));
     options.add(createPlayerBtn("P2: ", p2, p2Selector, 2));
     options.add(createToggleRules());
-
-    
+    pack();
     return options;
   }
 
@@ -289,6 +303,7 @@ public class TextUI extends JFrame {
         // initiate the creationg of players
         createPlayers();
         createMancalaGame();
+        pack();
         // should now create the Mancala Game 
         menuBar.setVisible(true);
 
@@ -300,17 +315,12 @@ public class TextUI extends JFrame {
 
   private JButton makeLoadProfileButton() {
     JButton loadProfile = new JButton("Load Profile");
-    loadProfile.addActionListener(e -> loadData(PROFILE_EXTENSION));
+    loadProfile.addActionListener(e -> {
+      loadData(PROFILE_EXTENSION);
+      switchPanel("MainMenu");
+      updatePlayerBtns();
+    });
     return loadProfile;
-  }
-
-
-
-  private JPanel makePlayerStores(JLabel storeLabel) {
-    JPanel storePanel = new JPanel(new BorderLayout());
-    storePanel.setBackground(Color.LIGHT_GRAY);
-    storePanel.add(storeLabel, BorderLayout.CENTER);
-    return storePanel;
   }
 
 
@@ -376,10 +386,14 @@ public class TextUI extends JFrame {
             p2.setGameWonK(p2.getGameWonK() + 1);
           }
         }
+
+        // update player card
+        updatePlayerInfo(p1, userInfoP1);
+        updatePlayerInfo(p2, userInfoP2);
       } catch (GameNotOverException e) {
         // should do not nothing if there is no winner
       } catch (NoSuchPlayerException e) {
-
+        // should do nothing for now
       }
 
       updateView();
@@ -407,7 +421,6 @@ public class TextUI extends JFrame {
     if(choice == JOptionPane.YES_OPTION) {
       addGamesPlayed();
       saveProfileModal();
-      quitGame();
     } else if (choice == JOptionPane.NO_OPTION) {
       newGame();
     }
@@ -424,12 +437,12 @@ public class TextUI extends JFrame {
 
     try {
           if(choice == 0) {
-            Saver.saveObject(p1, PROFILE_EXTENSION);
+            Saver.saveObject(p1, p1.getName() + PROFILE_EXTENSION);
           } else if (choice == 1) {
-            Saver.saveObject(p2, PROFILE_EXTENSION);
+            Saver.saveObject(p2, p2.getName() + PROFILE_EXTENSION);
           } else if (choice == 2) {
-            Saver.saveObject(p1, PROFILE_EXTENSION);
-            Saver.saveObject(p2, PROFILE_EXTENSION);
+            Saver.saveObject(p1, p1.getName() + PROFILE_EXTENSION);
+            Saver.saveObject(p2, p2.getName() + PROFILE_EXTENSION);
           }
     } catch (IOException e) {
       JOptionPane.showMessageDialog(rootPane, e.getMessage());
@@ -470,19 +483,20 @@ public class TextUI extends JFrame {
       if(fileExt.equals(PROFILE_EXTENSION)) {
         if(currSelector == 1) {
           p1 = (UserProfile) Saver.loadObject(fileName);
+          updatePlayerInfo(p1, userInfoP1);
         } else if (currSelector == 2) {
           p2 = (UserProfile) Saver.loadObject(fileName);
+          updatePlayerInfo(p2, userInfoP2);
         }
         updatePlayerBtns();
-        updatePlayerInfo();
       } else if (fileExt.equals(MANCALA_EXTENSION)) {
         game = (MancalaGame) Saver.loadObject(fileName);
+        updateView();
       }
     } catch (IOException | ClassNotFoundException e) {
       JOptionPane.showMessageDialog(rootPane, e.getMessage());
     }
 
-    updateView();
   }
 
   private void setGame(MancalaGame gameToSet) {
@@ -542,13 +556,11 @@ public class TextUI extends JFrame {
     p2Selector.setText("P2: " + ((p2 == null) ? "not set" : p2.getName()));
   }
 
-  private void updatePlayerInfo() {
+  private void updatePlayerInfo(UserProfile player, JLabel playerCard) {
 
-    String content1 = "<html>" + "Name:" + p1.getName() + "<br/>" + "Game Won (Kalah):" + p1.getGameWonK() + "<br/>" + "Game Won (Ayo):" + p1.getGameWonA() + "<br/>" +  "Games Played (Kalah):" + p1.getGamesPlayedK() + "<br/>" + "Game Played (Ayo):" + p1.getGamesPlayedA() + "<br/>" + "</html>";
-    String content2 = "<html>" + "Name:" + p2.getName() + "<br/>" + "Game Won (Kalah):" + p2.getGameWonK() + "<br/>" + "Game Won (Ayo):" + p2.getGameWonA() + "<br/>" +  "Games Played (Kalah):" + p2.getGamesPlayedK() + "<br/>" + "Game Played (Ayo):" + p2.getGamesPlayedA() + "<br/>" + "</html>";
+    String content1 = "<html>" + "Name:" + player.getName() + "<br/>" + "Game Won (Kalah):" + player.getGameWonK() + "<br/>" + "Game Won (Ayo):" + player.getGameWonA() + "<br/>" +  "Games Played (Kalah):" + player.getGamesPlayedK() + "<br/>" + "Game Played (Ayo):" + player.getGamesPlayedA() + "<br/>" + "</html>";
 
-    userInfoP1.setText(content1);
-    userInfoP2.setText(content2);
+    playerCard.setText(content1);
   }
 
   /*/

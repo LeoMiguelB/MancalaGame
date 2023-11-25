@@ -11,8 +11,6 @@ public class Pit implements Serializable, Countable{
     pitAmount = 0;
   }
 
-  // implements the countable methods
-
   /**
    * Get the count of stones in the object.
    *
