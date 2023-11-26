@@ -1,10 +1,10 @@
 # Project Title
 
-Text Based Mancala Game
+Mancala Game With Two Game Modes
 
 ## Description
 
-Built using Java, and tested with Gradle. This game is played with two players, and is based of the classic game Mancala.
+Using Java, and OOP principles I have developed a game that incorporates two version of Mancala. That is, Kalah, and Ayo. This game allows for two players, and has the ability to save in game progress, or even user profiles. 
 
 ## Getting Started
 
@@ -18,39 +18,18 @@ Built using Java, and tested with Gradle. This game is played with two players, 
 
 * How to build and run the program
 * Step-by-step bullets
-- first build the program
+- first you must obtain the jar file
+- then make you sure you are in the directory of the jar file when using this command
+- once you have the jar file simply type in the following command
 ```
-gradle build
-```
-Expected Output: 
-```BUILD SUCCESSFUL in 913ms
-5 actionable tasks: 5 up-to-date
+java -jar TextUI.jar
 ```
 
-- now run the echo command
-```
-gradle echo
-```
-Expected Output: 
-```
-> Task :echo
-To run the program from jar:
-java -jar build/libs/TextUI.jar
-To run the program from class files:
-java -cp build/classes/java/main ui.TextUI
-
-BUILD SUCCESSFUL in 535ms
-1 actionable task: 1 executed
-```
-
-- now use the last command listed
-```
-java -cp build/classes/java/main ui.TextUI
-```
+- now you can enjoy the game!
 
 ## Limitations
 
-- bugs can occur if input for the pits is anything other than a number  
+- no swing fx  
 
 ## Author Information
 
@@ -63,22 +42,20 @@ Email: lbantoli@uoguelph.ca
 Keep a log of what things you accomplish when.  You can use git's tagging feature to tag the versions or you can reference commits.
 
 * 0.5
-    * Test cases all implemented
-    * See [commit change](112bcec680b4e5e2b2de48a8d0a9f5e842d58c5f)
+    * cleared 60% of the pmd errors relative to the pmd errors in A2
+    * See [commit change](0924f269af7c7f177572a4ae58337c35b3b0acbc)
 * 0.4
-    * Test case done for captureStones()
-    * See [commit change](df73c7d0e3ca0e586b72e126cd6ec349e8e4b284)
+    * implementation now all complete
+    * See [commit change](8084aeac05e6ea74e42b93757ddf9607c07b9d2b)
 * 0.3
-    * Exception handling implemented
-    * See [commit change](d0bc1d229d94eacb44aa06af1c90f0bf9a537c72)
+    * major design change and now using a getIteratorPos method 
+    * See [commit change](bd5dd89d6632e239312c9b189e44eacbb1a5ec04)
 * 0.2
-    * Various bug fixes and optimizations
-    * Passed all given test cases
-    * See [commit change](0e55f743aec8a586f6659e5a05bbd9cc0e3a96b9)
+    * features are almost done but still need to do more testing
+    * See [commit change](663e3e18b162c7bfdf59d943e2b948246105bd48)
 * 0.1
-    * Initial Release 
-    * Skeleton is all setup
-    * See [commit change](1e398d2d69b672aa8c3a7369509f6bd71ea49299)
+    * was not able to submit to GP3 and hence moved repo to GP4
+    * See [commit change](8dad20fe7a75beac77b12f2014cb921ecb07bd15)
 
 ## Acknowledgments
 
