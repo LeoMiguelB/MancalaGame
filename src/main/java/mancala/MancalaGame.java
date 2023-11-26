@@ -103,7 +103,7 @@ public class MancalaGame implements Serializable{
     board.moveStones(startPit, isPlayerOne ? 1 : 2);
     
     // now should swithc current player (note: free turn is handled in KalahRules not here...)
-    setCurrentPlayer(isPlayerOne ? getPlayerTwo() : getPlayerOne());
+    setCurrentPlayer((board.getCurrentPlayer() == 1) ? getPlayerOne() : getPlayerTwo());
     
     return getSidePits(getCurrentPlayer());
     

@@ -114,6 +114,7 @@ public class TextUI extends JFrame {
     // ayo rules is one and kalah rules is two
     // this reduces the coupling between classes
     game.changeRules((toggleRules) ? 1 : 2);
+    System.out.println("inside of createPlayers: " + playerOne.getName());
     game.setPlayers(playerOne, playerTwo);
   }
 
@@ -155,7 +156,7 @@ public class TextUI extends JFrame {
     c.gridx = 0;
     c.gridwidth = 1;
     c.weightx = 0.6;
-    mancalaContainer.add(createUserCard(p1, userInfoP1),c);
+    mancalaContainer.add(createUserCard(p2, userInfoP2),c);
     c.gridx = 3;
     c.gridwidth = 2;
     c.weightx = 1;
@@ -163,7 +164,7 @@ public class TextUI extends JFrame {
     c.gridx = 7;
     c.gridwidth = 1;
     c.weightx = 0.6;
-    mancalaContainer.add(createUserCard(p2, userInfoP2),c);
+    mancalaContainer.add(createUserCard(p1, userInfoP1),c);
     sceneContainer.add(mancalaContainer, "MancalaGame");
     pack();
   }

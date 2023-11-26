@@ -11,6 +11,8 @@ public abstract class GameRules implements Serializable{
     private int currentPlayer = 1; // Player number (1 or 2)
     private static final int TOTAL_PITS = 14;
     private static final long serialVersionUID = -2829534344787151722L;
+    private static final int PLAYER_1_STORE = 6;
+    private static final int PLAYER_2_STORE = 13;
 
     /**
      * Constructor to initialize the game board.
@@ -199,6 +201,7 @@ public abstract class GameRules implements Serializable{
         int min = (playerNum == 1) ? 1 : 7;
 
         System.out.println("inside isCapture " + stopPitNum);
+        System.out.println("inside isCapture, getNumStones: " + getNumStones(stopPitNum));
 
         return ((getNumStones(stopPitNum) == 1) && (stopPitNum <= max && stopPitNum >= min));
     }
@@ -210,6 +213,37 @@ public abstract class GameRules implements Serializable{
         nextIndex = (nextIndex == 0) ? 1 : nextIndex;
 
         return nextIndex;
+    }
+
+    /**
+     * Set the current player.
+     *
+     * @return currentPlayer The player number (1 or 2).
+     */
+    public int getCurrentPlayer() {
+        return currentPlayer;
+    }
+
+    private boolean isStore(int pitIndex) {
+        return pitIndex == PLAYER_1_STORE || pitIndex == PLAYER_2_STORE;
+    }
+
+
+    public boolean isCapturePossible(int pitIndex, int playerNum) {
+        // logic for now is that keep pitIndex 0 based as per getItartorPos method, then use that to check
+        // if it is store, since short circuiting it's safe to assume isCapture will not need to check for store
+        // so inside that method it's safe to put it back to 1 based and ignore stores
+        if(isStore(pitIndex)) {
+          return false;
+        } 
+    
+        // here we can use the condition above as an advantage since free turns are when players land on stores..
+        setPlayer((playerNum == 1) ? 2 : 1);
+    
+        // now put it to 1 based, in other words undo the pitPos method
+        pitIndex = (pitIndex <= 6) ? ++pitIndex : pitIndex;
+    
+        return (isCapture(pitIndex, playerNum));
     }
 
     @Override

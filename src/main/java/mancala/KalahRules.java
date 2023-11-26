@@ -45,20 +45,19 @@ public class KalahRules extends GameRules {
     return numMoves;
   }
 
-  public boolean isCapturePossible(int pitIndex, int playerNum) {
-    return (!isStore(pitIndex) && isCapture(pitIndex, playerNum));
-  }
-
-  private boolean isStore(int pitIndex) {
-    return pitIndex == PLAYER_1_STORE || pitIndex == PLAYER_2_STORE;
-  }
-
 
   @Override
   public int moveStones(int startPit, int playerNum) throws InvalidMoveException {
     if (!isValidMove(startPit, playerNum)) {
       throw new InvalidMoveException("Pick a valid pit!");
     }
+
+    // since swapping of players might occur, need to save the curr playerNum
+    int saveCurrPlayer = playerNum;
+
+    // in order to calculate the number of stones added
+    // to the players store must save this to calc difference
+    int sCurrStoreCount = getPlayerStoreCount(saveCurrPlayer);
     
     int numMoves = distributeStones(startPit);
 
@@ -71,19 +70,16 @@ public class KalahRules extends GameRules {
     int pitNumAfterMove = boardGame.getIteratorPos();
 
     if (isCapturePossible(pitNumAfterMove, playerNum)) {
+      System.out.println("this means we should be capturing...");
+      // if it passed the store test it means we are not dealing with a store hence we can go back to 1 based
+      pitNumAfterMove = (pitNumAfterMove <= 6) ? ++pitNumAfterMove : pitNumAfterMove;
       int capturedStones = captureStones(pitNumAfterMove);
+      System.out.println("captured stones in moveStones " + capturedStones);
       addStoneStore(playerNum, capturedStones);
-    }
-    
-    int saveCurrP = playerNum;
-    
-    // if player lands on their store just dont' switch players to indicate a free
-    // turn
-    if ((pitNumAfterMove != playerStore)) {
-      setPlayer((playerNum == 1) ? 2 : 1);
-    }
+    } 
 
-    return getPlayerStoreCount(saveCurrP);
+    // effectively calcs the difference
+    return (getPlayerStoreCount(saveCurrPlayer) - sCurrStoreCount);
   }
 
 }

@@ -20,6 +20,7 @@ public class AyoRules extends GameRules {
 
     int capturedStones = removePitStones(oppositePitIndex);
     
+    // final stone that landed on empty is not captured in ayo rules
     return capturedStones;
   }
 
@@ -56,38 +57,28 @@ public class AyoRules extends GameRules {
     return numMoves;
   }
 
-  
-  private boolean isStore(int pitIndex) {
-    return pitIndex == PLAYER_1_STORE || pitIndex == PLAYER_2_STORE;
-  }
-
-  private boolean isCapturePossible(int pitIndex, int playerNum) {
-    return !isStore(pitIndex) && isCapture(pitIndex, playerNum);
-  }
-
 
   @Override
   public int moveStones(int startPit, int playerNum) throws InvalidMoveException {
     if (!isValidMove(startPit, playerNum)) {
       throw new InvalidMoveException("Pick a valid pit!");
     }
+
+    int saveCurrPlayer = playerNum;
+
+    int sCurrStoreCount = getPlayerStoreCount(saveCurrPlayer);
     
     int numMoves = distributeStones(startPit); // Start the laps from startPit
-    
-    int pitNumAfterMove = getNextPitIndex(startPit+numMoves);
+
+    MancalaDataStructure boardGame = getDataStructure();
+    int pitNumAfterMove = boardGame.getIteratorPos();
     
     if (isCapturePossible(pitNumAfterMove, playerNum)) {
-      // subtract one since this version does not take the last pit the landed on empty
-      int capturedStones = (captureStones(pitNumAfterMove)-1);
-      // add back to the pit to keep the last stone
-      addStone(pitNumAfterMove);
+      pitNumAfterMove = (pitNumAfterMove <= 6) ? ++pitNumAfterMove : pitNumAfterMove;
+      int capturedStones = (captureStones(pitNumAfterMove));
       addStoneStore(playerNum, capturedStones);
     }
-    
-    int currentPlayer = playerNum;
 
-    setPlayer((playerNum == 1) ? 2 : 1);
-
-    return getPlayerStoreCount(currentPlayer);
+    return (getPlayerStoreCount(saveCurrPlayer) - sCurrStoreCount);
   }
 }
