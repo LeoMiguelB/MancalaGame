@@ -17,27 +17,27 @@ public class Store implements Serializable,Countable{
     owner = player;
   }
 
-  /* default */ Player getOwner() {
+  /* package */ Player getOwner() {
     return owner;
   }
 
+  @Override
   public void addStone() {
     storeHole++;
   }
 
-  public void addStones(int numToAdd) {
-    storeHole+= numToAdd;
+  @Override
+  public void addStones(final int numToAdd) {
+    storeHole += numToAdd;
   }
 
-  /**
-   * Get the count of stones in the object.
-   *
-   * @return The count of stones.
-   */
+
+  @Override
   public int getStoneCount() {
     return storeHole;
   }
 
+  @Override
   public int removeStones() {
     final int saveVal = storeHole;
     storeHole = 0;

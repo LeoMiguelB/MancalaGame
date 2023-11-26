@@ -3,6 +3,7 @@ package mancala;
 import java.io.Serializable;
 
 public class UserProfile implements Serializable {
+  private static final long serialVersionUID = 6355532757989608423L;
   private String name;
   private int gamesPlayedK;
   private int gameWonK;
@@ -12,11 +13,11 @@ public class UserProfile implements Serializable {
   public UserProfile() {
   }
 
-  public UserProfile(String name) {
+  public UserProfile(final String name) {
     this(name,0,0,0,0);
   }
 
-  public UserProfile(String name, int gamesPlayedK, int gameWonK, int gamesPlayedA, int gameWonA) {
+  public UserProfile(final String name, final int gamesPlayedK, final int gameWonK, final int gamesPlayedA, final int gameWonA) {
     this.name = name;
     this.gamesPlayedK = gamesPlayedK;
     this.gameWonK = gameWonK;
@@ -28,7 +29,7 @@ public class UserProfile implements Serializable {
     return name;
   }
 
-  public void setName(String name) {
+  public void setName(final String name) {
     this.name = name;
   }
 
@@ -36,7 +37,7 @@ public class UserProfile implements Serializable {
     return gamesPlayedK;
   }
 
-  public void setGamesPlayedK(int gamesPlayedK) {
+  public void setGamesPlayedK(final int gamesPlayedK) {
     this.gamesPlayedK = gamesPlayedK;
   }
 
@@ -44,7 +45,7 @@ public class UserProfile implements Serializable {
     return gameWonK;
   }
 
-  public void setGameWonK(int gameWonK) {
+  public void setGameWonK(final int gameWonK) {
     this.gameWonK = gameWonK;
   }
 
@@ -52,7 +53,7 @@ public class UserProfile implements Serializable {
     return gamesPlayedA;
   }
 
-  public void setGamesPlayedA(int gamesPlayedA) {
+  public void setGamesPlayedA(final int gamesPlayedA) {
     this.gamesPlayedA = gamesPlayedA;
   }
 
@@ -60,12 +61,12 @@ public class UserProfile implements Serializable {
     return gameWonA;
   }
 
-  public void setGameWonA(int gameWonA) {
+  public void setGameWonA(final int gameWonA) {
     this.gameWonA = gameWonA;
   }
 
   // true is ayo rules otherwise it's kalah
-  public void addGamePlayed(boolean rule){
+  public void addGamePlayed(final boolean rule){
     if(rule) {
       this.gamesPlayedA++;
     } else {

@@ -13,7 +13,7 @@ public class MancalaGame implements Serializable{
     setGameRules(new KalahRules());
   }  
 
-  public MancalaGame(GameRules whichRule) {
+  public MancalaGame(final GameRules whichRule) {
     setGameRules(whichRule);
   }
   
@@ -43,7 +43,8 @@ public class MancalaGame implements Serializable{
     }
     
     // check if its' player one; to do this storeOne always holds player one
-    boolean isPlayerOne = (getPlayerName(player).equals(getPlayerName(getPlayerOne())));
+    // boolean isPlayerOne = (getPlayerName(player).equals(getPlayerName(getPlayerOne())));
+    final boolean isPlayerOne = (isNamesEqual(getPlayerName(player), getPlayerName(getPlayerOne())));
     int playerNum = isPlayerOne ? 1 : 2;
 
     return board.getPlayerStoreCount(playerNum);
@@ -54,7 +55,7 @@ public class MancalaGame implements Serializable{
     Player winner;
     if(isGameOver()) {
       // need to know whose side is not empty
-      int playerNotEmpty = (isSideEmpty(1)) ? 2 : 1;
+      int playerNotEmpty = isSideEmpty(1) ? 2 : 1;
 
       endGameEmptySides(playerNotEmpty);
 
@@ -76,9 +77,9 @@ public class MancalaGame implements Serializable{
   }
   
   public boolean isGameOver() {
-    boolean sideOne = (isSideEmpty(1));
-    boolean sideTwo = (isSideEmpty(7));
-    return (sideOne || sideTwo);
+    final boolean sideOne = isSideEmpty(1);
+    final boolean sideTwo = isSideEmpty(7);
+    return sideOne || sideTwo;
   }
   
   // wrapper for checking if one side is empty
@@ -92,8 +93,8 @@ public class MancalaGame implements Serializable{
   public int move(final int startPit) throws 
   InvalidMoveException, PitNotFoundException {
     // player 1 can only choose from pits 1 to 6, opposite for player 2
-    final boolean isPlayerOne = (getPlayerName(currentPlayer).equals(getPlayerName(getPlayerOne())));
-    
+    final boolean isPlayerOne = isNamesEqual(getPlayerName(currentPlayer), getPlayerName(getPlayerOne()));
+
     // the other checks or done inside the GameRules implmentations...
     
     if(isPitEmpty(startPit)) {
@@ -133,13 +134,13 @@ public class MancalaGame implements Serializable{
   }
   
   // setter for the game rules
-  private void setGameRules(GameRules whichRule) {
+  private void setGameRules(final GameRules whichRule) {
     board = whichRule;
   }
   
   // factory method for the setGameRules
   // decouples the textui from the GameRules class
-  public void changeRules(int choice) {
+  public void changeRules(final int choice) {
     if(choice == 1) {
       setGameRules(new AyoRules());
     } else if (choice == 2) {
@@ -154,34 +155,41 @@ public class MancalaGame implements Serializable{
   wrappers and helpers
   */
   
-  private void endGameEmptySides(int playerNum) {
-    int max = (playerNum == 1) ? 6 : 12;
-    int min = (playerNum == 1) ? 1 : 7;
+  private void endGameEmptySides(final int playerNum) {
+    final int max = (playerNum == 1) ? 6 : 12;
+    final int min = (playerNum == 1) ? 1 : 7;
     
     for(int i = min; i <= max; i++) {
-      int stonesToAdd = board.removePitStones(i);
+      final int stonesToAdd = board.removePitStones(i);
       board.addStoneStore(playerNum, stonesToAdd);
     }
   }
 
-  private void setPlayerOne(Player pOne) {
+  private void setPlayerOne(final Player pOne) {
     playerOne = pOne;
   }
   
-  private void setPlayerTwo(Player pTwo) {
+  private void setPlayerTwo(final Player pTwo) {
     playerTwo = pTwo;
   }
   
   // helper for get getting players name
-  private String getPlayerName(Player p) {
-    return p.getName();
+  private String getPlayerName(final Player player) {
+    return player.getName();
   }
   
+  // // helper if this player exists in the game
+  // private boolean containsPlayer(Player p) {
+  //   String pOneName = getPlayerName(getPlayerOne());
+  //   String pTwoName = getPlayerName(getPlayerTwo());
+  //   return (getPlayerName(p).equals(pOneName) || getPlayerName(p).equals(pTwoName));
+  // }
+
   // helper if this player exists in the game
-  private boolean containsPlayer(Player p) {
-    String pOneName = getPlayerName(getPlayerOne());
-    String pTwoName = getPlayerName(getPlayerTwo());
-    return (getPlayerName(p).equals(pOneName) || getPlayerName(p).equals(pTwoName));
+  private boolean containsPlayer(final Player player) {
+    final String pOneName = getPlayerName(getPlayerOne());
+    final String pTwoName = getPlayerName(getPlayerTwo());
+    return (isNamesEqual(getPlayerName(player), pOneName) || isNamesEqual(getPlayerName(player), pTwoName));
   }
   
   // helper method to add up the the specified pits

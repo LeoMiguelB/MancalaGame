@@ -2,21 +2,17 @@ package mancala;
 
 public class KalahRules extends GameRules {
 
-  private static final int PLAYER_1_STORE = 6;
-  private static final int PLAYER_2_STORE = 13;
-  private static final int TOTAL_PITS = 12;
-
   public KalahRules() {
     this(4);
   }
 
-  public KalahRules(int numStonesStart) {
+  public KalahRules(final int numStonesStart) {
     super(numStonesStart);
   }
 
   @Override
-  int captureStones(int stoppingPoint) {
-    int oppPitNumber = (13 - stoppingPoint);
+  int captureStones(final int stoppingPoint) {
+    final int oppPitNumber = 13 - stoppingPoint;
 
     int captured = removePitStones(oppPitNumber);
 
@@ -27,9 +23,9 @@ public class KalahRules extends GameRules {
   }
 
   @Override
-  int distributeStones(int startPit) {
-    int numMoves = removePitStones(startPit);
-    boolean shouldSkip = false;
+  int distributeStones(final int startPit) {
+    final int numMoves = removePitStones(startPit);
+    final boolean shouldSkip = false;
     // this variation account for the
     // subtract one from the startPit, so that when next() is called it lands
     // on the startPit
@@ -47,17 +43,17 @@ public class KalahRules extends GameRules {
 
 
   @Override
-  public int moveStones(int startPit, int playerNum) throws InvalidMoveException {
+  public int moveStones(final int startPit, final int playerNum) throws InvalidMoveException {
     if (!isValidMove(startPit, playerNum)) {
       throw new InvalidMoveException("Pick a valid pit!");
     }
 
     // since swapping of players might occur, need to save the curr playerNum
-    int saveCurrPlayer = playerNum;
+    final int saveCurrPlayer = playerNum;
 
     // in order to calculate the number of stones added
     // to the players store must save this to calc difference
-    int sCurrStoreCount = getPlayerStoreCount(saveCurrPlayer);
+    final int sCurrStoreCount = getPlayerStoreCount(saveCurrPlayer);
     
     int numMoves = distributeStones(startPit);
 

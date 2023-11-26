@@ -22,7 +22,7 @@ public abstract class GameRules implements Serializable{
         this(4);
     }
 
-    public GameRules(int numStonesEach) {
+    public GameRules(final int numStonesEach) {
         gameBoard = new MancalaDataStructure(numStonesEach);
         gameBoard.setUpPits();
 
@@ -34,7 +34,7 @@ public abstract class GameRules implements Serializable{
      * @param pitNum The number of the pit.
      * @return The number of stones in the pit.
      */
-    public int getNumStones(int pitNum) {
+    public int getNumStones(final int pitNum) {
         return gameBoard.getNumStones(pitNum);
     }
 
@@ -53,13 +53,13 @@ public abstract class GameRules implements Serializable{
      * @param pitNum The number of a pit in the side.
      * @return True if the side is empty, false otherwise.
      */
-    boolean isSideEmpty(int pitNum) {
+    boolean isSideEmpty(final int pitNum) {
         // This method can be implemented in the abstract class.
 
 
         // set max for the player traversal
-        int max = (pitNum > 0 && pitNum < 7) ? 7 : 13;
-        int min = (pitNum > 0 && pitNum < 7) ? 1 : 7;
+        final int max = (pitNum > 0 && pitNum < 7) ? 7 : 13;
+        final int min = (pitNum > 0 && pitNum < 7) ? 1 : 7;
 
 
         // should terminate if atleast one pit has a stone
@@ -78,7 +78,7 @@ public abstract class GameRules implements Serializable{
      *
      * @param playerNum The player number (1 or 2).
      */
-    public void setPlayer(int playerNum) {
+    public void setPlayer(final int playerNum) {
         currentPlayer = playerNum;
     }
 
@@ -114,7 +114,7 @@ public abstract class GameRules implements Serializable{
      * @param one The first player.
      * @param two The second player.
      */
-    public void registerPlayers(Player one, Player two) {
+    public void registerPlayers(final Player one, final Player two) {
         // this method can be implemented in the abstract class.
 
         /*
@@ -123,8 +123,8 @@ public abstract class GameRules implements Serializable{
          */
 
         // create two new stores for these players
-        Store storeOne = new Store();
-        Store storeTwo = new Store();
+        final Store storeOne = new Store();
+        final Store storeTwo = new Store();
         storeOne.setOwner(one);
         storeTwo.setOwner(two);
         gameBoard.setStore(storeOne, 1);
@@ -151,35 +151,35 @@ public abstract class GameRules implements Serializable{
     // wrappers and helpers
     // -----------------------------------------------------------------------
 
-    public boolean isValidMove(int pitIndex, int playerNum) {
-        int min = (playerNum == 1) ? 1 : 7;
-        int max = (playerNum == 1) ? 6 : 12;
+    public boolean isValidMove(final int pitIndex, final int playerNum) {
+        final int min = (playerNum == 1) ? 1 : 7;
+        final int max = (playerNum == 1) ? 6 : 12;
         return (pitIndex >= min && pitIndex <= max) && getNumStones(pitIndex) != 0;
     }
 
-    public int removePitStones(int pitNum) {
+    public int removePitStones(final int pitNum) {
         // the remove stones built in already indexes automatically
         return gameBoard.removeStones(pitNum);
     }
 
-    public int getPlayerStoreCount(int p) {
-        return gameBoard.getStoreCount(p);
+    public int getPlayerStoreCount(int player) {
+        return gameBoard.getStoreCount(player);
     }
 
-    public Store getPlayersStore(Player p) {
-        return p.getStore();
+    public Store getPlayersStore(final Player player) {
+        return player.getStore();
     }
 
-    public void addStoneStore(int playerNum, int amount) {
+    public void addStoneStore(final int playerNum, final int amount) {
         gameBoard.addToStore(playerNum, amount);
     }
 
-    public void addStone(int pitNum) {
+    public void addStone(final int pitNum) {
         // for now simply increment by 1
         gameBoard.addStones(pitNum, 1);
     }
 
-    public void setIterator(int startPit, boolean skipStartingPit) {
+    public void setIterator(final int startPit, final boolean skipStartingPit) {
         // for ayo should skip the current pit hence third param is true
         gameBoard.setIterator(startPit, currentPlayer, skipStartingPit);
     }
@@ -188,21 +188,21 @@ public abstract class GameRules implements Serializable{
         return gameBoard.next();
     }
 
-    public void setGameStores(Store store, Store storeT) {
+    public void setGameStores(final Store store, final Store storeT) {
         gameBoard.setStore(store, 1);
         gameBoard.setStore(storeT, 2);
     }
 
     // helper to check if capture can be made
-    public boolean isCapture(int stopPitNum, int playerNum) {
+    public boolean isCapture(final int stopPitNum, final int playerNum) {
         // no need to index
-        int max = (playerNum == 1) ? 6 : 12;
-        int min = (playerNum == 1) ? 1 : 7;
+        final int max = (playerNum == 1) ? 6 : 12;
+        final int min = (playerNum == 1) ? 1 : 7;
 
-        return ((getNumStones(stopPitNum) == 1) && (stopPitNum <= max && stopPitNum >= min));
+        return (getNumStones(stopPitNum) == 1) && (stopPitNum <= max && stopPitNum >= min);
     }
 
-    public int getNextPitIndex(int currentValue) {
+    public int getNextPitIndex(final int currentValue) {
 
         int nextIndex = (currentValue % TOTAL_PITS);
         // if modulus results in 0 then it must be that it landed on 1
@@ -220,7 +220,7 @@ public abstract class GameRules implements Serializable{
         return currentPlayer;
     }
 
-    public boolean isStore(int pitIndex) {
+    public boolean isStore(final int pitIndex) {
         return pitIndex == PLAYER_1_STORE || pitIndex == PLAYER_2_STORE;
     }
 

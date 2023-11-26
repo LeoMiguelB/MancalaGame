@@ -11,38 +11,26 @@ public class Pit implements Serializable, Countable{
     pitAmount = 0;
   }
 
-  /**
-   * Get the count of stones in the object.
-   *
-   * @return The count of stones.
-   */
+
+  @Override
   public int getStoneCount() {
     return pitAmount;    
   }
 
-  /**
-   * Add one stone to the object.
-   */
+  
+  @Override
   public void addStone() {
     pitAmount++;
   }
 
-  /**
-   * Add a specified number of stones to the object.
-   *
-   * @param numToAdd The number of stones to add.
-   */
-  public void addStones(int numToAdd) {
+  @Override
+  public void addStones(final int numToAdd) {
     pitAmount += numToAdd;
   }
 
-  /**
-   * Remove stones from the object.
-   *
-   * @return The number of stones removed.
-   */
+  @Override
   public int removeStones() {
-    int temp = pitAmount;
+    final int temp = pitAmount;
     pitAmount = 0;
     return temp;
   }

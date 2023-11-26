@@ -27,7 +27,8 @@ public class Saver {
       try {
         // Create the folder
         Files.createDirectory(folderPath);
-      } catch (Exception e) {
+      } catch (IOException e) {
+        throw e;
       }
     }
     
@@ -43,7 +44,7 @@ public class Saver {
   }
 
   public static Serializable loadObject(final String filename) throws IOException, ClassNotFoundException {
-    Serializable gameLoaded = null;
+    Serializable gameLoaded;
 
     Path currentDir = Paths.get(System.getProperty("user.dir"));
     Path folderPath = currentDir.resolve(FOLDER_NAME);
@@ -52,8 +53,8 @@ public class Saver {
     if(!folderExists) {
       try {
         Files.createDirectory(folderPath);
-      } catch (Exception e) {
-
+      } catch (IOException e) {
+        throw e;
       }
     }
 
@@ -63,7 +64,7 @@ public class Saver {
 
       gameLoaded = (Serializable) objectIn.readObject();
 
-    } catch (IOException | ClassNotFoundException e) {
+    } catch (IOException e) {
       throw e;
     }
     return gameLoaded;
