@@ -35,6 +35,11 @@ public class Player implements Serializable {
     store = storeSet;
   }
 
+  // getter for the user profile
+  public UserProfile getUserProfile() {
+    return user;
+  }
+
   @Override
   public String toString() {
     return name + "-> " + getStoreCount();

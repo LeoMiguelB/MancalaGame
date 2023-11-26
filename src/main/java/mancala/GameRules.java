@@ -143,6 +143,8 @@ public abstract class GameRules implements Serializable{
         }
         gameBoard.setUpPits();
         gameBoard.emptyStores();
+        // reset the current player back to player one
+        setPlayer(1);
     }
 
     // -----------------------------------------------------------------------

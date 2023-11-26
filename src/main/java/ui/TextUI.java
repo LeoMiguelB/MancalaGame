@@ -428,7 +428,8 @@ public class TextUI extends JFrame {
     String[] options = {
       "Save Profile 1",
       "Save Profile 2",
-      "Save Both"
+      "Save Both",
+      "None"
     };
     int choice = JOptionPane.showOptionDialog(rootPane, "Select an option to save profiles:", "Profile Saving Options", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
 
@@ -488,12 +489,20 @@ public class TextUI extends JFrame {
         updatePlayerBtns();
       } else if (fileExt.equals(MANCALA_EXTENSION)) {
         game = (MancalaGame) Saver.loadObject(fileName);
+        // the user profiles does not get persisted along with the MancalaGame
+        // best to set the current user profiles to the new mancala game
+        game.setPlayers(new Player(p1), new Player(p2));
         updateView();
       }
     } catch (IOException | ClassNotFoundException e) {
       JOptionPane.showMessageDialog(rootPane, e.getMessage());
     }
 
+  }
+
+  // helper for getting the user profile from player
+  private UserProfile getUserProfile(Player player) {
+    return player.getUserProfile();
   }
 
   private void setGame(MancalaGame gameToSet) {

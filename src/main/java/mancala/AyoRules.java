@@ -27,8 +27,11 @@ public class AyoRules extends GameRules {
   @Override
   int distributeStones(int startPit) {
     boolean skipStartPit = true;
+
     setIterator(startPit, skipStartPit);
+
     int numMoves = removePitStones(startPit);
+
     int numMovesNthLap = numMoves;
     boolean laps = true;
     Countable currentSpot = null;
@@ -92,7 +95,7 @@ public class AyoRules extends GameRules {
     if(isStore(pitIndex)) {
       return false;
     } 
-    
+
     // here we can use the condition above as an advantage since free turns are when players land on stores..
 
     // now put it to 1 based, in other words undo the pitPos method
