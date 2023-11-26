@@ -25,7 +25,6 @@ public class AyoRulesTest {
     data = rules.getDataStructure();
   }
 
-  @Disabled
   @Test
   public void testMoveStonesOneMove() throws InvalidMoveException {
 
@@ -78,7 +77,6 @@ public class AyoRulesTest {
     assertEquals(1, data.getNumStones(7));
   }
 
-  @Disabled
   @Test
   public void testDistributeStonesSingleMove() {
     /* empty pit 9 setup */
@@ -95,7 +93,6 @@ public class AyoRulesTest {
     assertEquals(1, data.getNumStones(9));
   }
 
-  @Disabled
   @Test
   public void testCaptureStonesNonEmptyTarget() {
 

@@ -70,16 +70,31 @@ public class KalahRules extends GameRules {
     int pitNumAfterMove = boardGame.getIteratorPos();
 
     if (isCapturePossible(pitNumAfterMove, playerNum)) {
-      System.out.println("this means we should be capturing...");
       // if it passed the store test it means we are not dealing with a store hence we can go back to 1 based
       pitNumAfterMove = (pitNumAfterMove <= 6) ? ++pitNumAfterMove : pitNumAfterMove;
       int capturedStones = captureStones(pitNumAfterMove);
-      System.out.println("captured stones in moveStones " + capturedStones);
       addStoneStore(playerNum, capturedStones);
     } 
 
     // effectively calcs the difference
     return (getPlayerStoreCount(saveCurrPlayer) - sCurrStoreCount);
   }
+
+  public boolean isCapturePossible(int pitIndex, int playerNum) {
+    // logic for now is that keep pitIndex 0 based as per getItartorPos method, then use that to check
+    // if it is store, since short circuiting it's safe to assume isCapture will not need to check for store
+    // so inside that method it's safe to put it back to 1 based and ignore stores
+    if(isStore(pitIndex)) {
+      return false;
+    } 
+
+    // here we can use the condition above as an advantage since free turns are when players land on stores..
+    setPlayer((playerNum == 1) ? 2 : 1);
+
+    // now put it to 1 based, in other words undo the pitPos method
+    pitIndex = (pitIndex <= 6) ? ++pitIndex : pitIndex;
+
+    return (isCapture(pitIndex, playerNum));
+  } 
 
 }

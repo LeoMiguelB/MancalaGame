@@ -57,7 +57,6 @@ public class MancalaDataStructure implements Serializable{
     public int addStones(int pitNum, int numToAdd) {
         Countable pit = data.get(pitPos(pitNum));
         pit.addStones(numToAdd);
-        System.out.println("in add stones");
         return pit.getStoneCount();
     }
 

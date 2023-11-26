@@ -65,8 +65,6 @@ public abstract class GameRules implements Serializable{
         // should terminate if atleast one pit has a stone
         // should be up to 6 since each side has 6 pits
         for (int i = min; i < max; i++) {
-            System.out.println(i);
-            System.out.println((getNumStones(i) >= 1));
             if(getNumStones(i) >= 1) {
                 return false;
             }
@@ -158,7 +156,6 @@ public abstract class GameRules implements Serializable{
     }
 
     public int removePitStones(int pitNum) {
-        // System.out.println("inside remove stones (GameRules) " + pitNum);
         // the remove stones built in already indexes automatically
         return gameBoard.removeStones(pitNum);
     }
@@ -200,9 +197,6 @@ public abstract class GameRules implements Serializable{
         int max = (playerNum == 1) ? 6 : 12;
         int min = (playerNum == 1) ? 1 : 7;
 
-        System.out.println("inside isCapture " + stopPitNum);
-        System.out.println("inside isCapture, getNumStones: " + getNumStones(stopPitNum));
-
         return ((getNumStones(stopPitNum) == 1) && (stopPitNum <= max && stopPitNum >= min));
     }
 
@@ -224,27 +218,10 @@ public abstract class GameRules implements Serializable{
         return currentPlayer;
     }
 
-    private boolean isStore(int pitIndex) {
+    public boolean isStore(int pitIndex) {
         return pitIndex == PLAYER_1_STORE || pitIndex == PLAYER_2_STORE;
     }
 
-
-    public boolean isCapturePossible(int pitIndex, int playerNum) {
-        // logic for now is that keep pitIndex 0 based as per getItartorPos method, then use that to check
-        // if it is store, since short circuiting it's safe to assume isCapture will not need to check for store
-        // so inside that method it's safe to put it back to 1 based and ignore stores
-        if(isStore(pitIndex)) {
-          return false;
-        } 
-    
-        // here we can use the condition above as an advantage since free turns are when players land on stores..
-        setPlayer((playerNum == 1) ? 2 : 1);
-    
-        // now put it to 1 based, in other words undo the pitPos method
-        pitIndex = (pitIndex <= 6) ? ++pitIndex : pitIndex;
-    
-        return (isCapture(pitIndex, playerNum));
-    }
 
     @Override
     public String toString() {

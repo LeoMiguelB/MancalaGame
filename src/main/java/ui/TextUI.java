@@ -114,7 +114,6 @@ public class TextUI extends JFrame {
     // ayo rules is one and kalah rules is two
     // this reduces the coupling between classes
     game.changeRules((toggleRules) ? 1 : 2);
-    System.out.println("inside of createPlayers: " + playerOne.getName());
     game.setPlayers(playerOne, playerTwo);
   }
 
@@ -195,9 +194,9 @@ public class TextUI extends JFrame {
       storeOne = new JLabel(Integer.toString(game.getStoreCount(game.getPlayerOne())));
       storeTwo = new JLabel(Integer.toString(game.getStoreCount(game.getPlayerTwo())));
     } catch (NoSuchPlayerException e) {
+      // default to a string 0 if for some reason it's sucessful
       storeOne = new JLabel("0");
       storeTwo = new JLabel("0");
-      System.out.println("Error retrieving store count: " + e.getMessage());
     }
   }
 
@@ -391,15 +390,13 @@ public class TextUI extends JFrame {
         // update player card
         updatePlayerInfo(p1, userInfoP1);
         updatePlayerInfo(p2, userInfoP2);
-      } catch (GameNotOverException e) {
+      } catch (GameNotOverException | NoSuchPlayerException e) {
         // should do not nothing if there is no winner
-      } catch (NoSuchPlayerException e) {
-        // should do nothing for now
-      }
+      } 
 
       updateView();
     
-    } catch (InvalidMoveException e) {
+    } catch (InvalidMoveException | PitNotFoundException e) {
       JOptionPane.showMessageDialog(rootPane, e.getMessage());
     } 
   }
@@ -433,7 +430,6 @@ public class TextUI extends JFrame {
       "Save Profile 2",
       "Save Both"
     };
-    System.out.println("inside of save Profile modal");
     int choice = JOptionPane.showOptionDialog(rootPane, "Select an option to save profiles:", "Profile Saving Options", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
 
     try {
@@ -548,7 +544,7 @@ public class TextUI extends JFrame {
       storeOne.setText(Integer.toString(game.getStoreCount(game.getPlayerOne())));
       storeTwo.setText(Integer.toString(game.getStoreCount(game.getPlayerTwo())));
     } catch (NoSuchPlayerException e) {
-      System.out.println(e.getMessage());
+      // for now do nothing about this exception... seems like it should never happen
     }
   }
 

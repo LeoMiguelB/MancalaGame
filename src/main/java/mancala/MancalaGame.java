@@ -90,7 +90,7 @@ public class MancalaGame implements Serializable{
   // players 1's pit starts at pit 1 to 6, same pattern applies to player 2
   // should check if the pit is empty (shoudl not have to check within board again)
   public int move(final int startPit) throws 
-  InvalidMoveException {
+  InvalidMoveException, PitNotFoundException {
     // player 1 can only choose from pits 1 to 6, opposite for player 2
     final boolean isPlayerOne = (getPlayerName(currentPlayer).equals(getPlayerName(getPlayerOne())));
     
@@ -185,35 +185,27 @@ public class MancalaGame implements Serializable{
   }
   
   // helper method to add up the the specified pits
-  private int addAllPits(final int min, final int max) {
+  private int addAllPits(final int min, final int max) throws PitNotFoundException{
     int total = 0;
     for (int i = min; i < max; i++) {
-      try {
-        // getNumStones is not indexed so add one
-        total += getNumStones(i+1);
-      } catch (PitNotFoundException e) {
-        System.out.println(e);
-      }
+      // getNumStones is not indexed so add one
+      total += getNumStones(i+1);
     }
     
     return total;
   }
-  
+   
 
   // helper for checking if pit is empty
-  private boolean isPitEmpty(final int whichPit) {
+  private boolean isPitEmpty(final int whichPit) throws PitNotFoundException {
     boolean isEmpty = false;
-    try {
-      isEmpty = (getNumStones(whichPit) == 0);
-    } catch (PitNotFoundException e) {
-      System.out.println(e);
-    }
+    isEmpty = (getNumStones(whichPit) == 0);
     return isEmpty;
   }
 
   // helper method for the the move method
   // gets the number of rocks in each pit on the players side
-  private int getSidePits(final Player player) {
+  private int getSidePits(final Player player) throws PitNotFoundException{
     // return ((getPlayerName(player).equals(getPlayerName(getPlayerOne()))) ? addAllPits(0, 6) : addAllPits(6, 12));
     return (isNamesEqual(getPlayerName(player), getPlayerName(getPlayerOne()))) ? addAllPits(0, 6) : addAllPits(6, 12);
   }

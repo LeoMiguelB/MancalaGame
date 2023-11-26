@@ -34,7 +34,6 @@ public class Saver {
     Path filePathFull = folderPath.resolve(filename);
 
     try (ObjectOutputStream objectOut = new ObjectOutputStream(new FileOutputStream(filePathFull.toFile()))) {
-      System.out.println("currently saving object");
       objectOut.writeObject(toSave);
 
     } catch (IOException e) {
