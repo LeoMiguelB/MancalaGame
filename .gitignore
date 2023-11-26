@@ -65,3 +65,6 @@ ipynb_checkpoints
 
 # ignore test case plans
 test_case_description_plan.txt
+
+# ignore the config folder since it's not needed
+config/
