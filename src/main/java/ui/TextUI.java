@@ -510,7 +510,11 @@ public class TextUI extends JFrame {
   }
 
   private String fileLoader(String fileExt) {
+    // essentially remove the dot at the beggnining of the string
+    String fileExtension = fileExt.substring(1);
     JFileChooser chooser = new JFileChooser();
+    FileNameExtensionFilter filter =  new FileNameExtensionFilter(fileExtension, fileExtension);
+    chooser.setFileFilter(filter);
     int validation = chooser.showOpenDialog(mancalaContainer);
     if (validation == JFileChooser.APPROVE_OPTION) {
       return chooser.getSelectedFile().getName();
